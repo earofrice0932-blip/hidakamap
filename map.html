@@ -974,68 +974,39 @@
     }
 
     // 凡例コントロール（colorPoinMapの内容から自動生成）
-    const legend = L.control({ position: "bottomright" });
+    const legend = L.control({ position: "bottomright" });legend.onAdd = function (map) {
+    
+    const div = L.DomUtil.create("div");
 
-    legend.onAdd = function (map) {
-      const div = L.DomUtil.create("div");
+    L.DomEvent.disableClickPropagation(div);
+    L.DomEvent.disableScrollPropagation(div);
+    L.DomEvent.on(div, "touchstart", L.DomEvent.stopPropagation);
+    L.DomEvent.on(div, "touchmove", L.DomEvent.stopPropagation);
 
-      // 凡例全体の見た目をインラインstyleで直接指定
-      div.style.background = "white";
-      div.style.padding = "8px 10px";
-      div.style.borderRadius = "5px";
-      div.style.boxShadow = "0 0 5px rgba(0,0,0,0.3)";
-      div.style.lineHeight = "1.6";
-      div.style.fontSize = "13px";
-      div.style.maxHeight = "200px";
-      div.style.overflowY = "auto";
+    div.style.background = "white";
+    div.style.padding = "8px 10px";
+    div.style.borderRadius = "5px";
+    div.style.boxShadow = "0 0 5px rgba(0,0,0,0.3)";
+    div.style.lineHeight = "1.6";
+    div.style.fontSize = "13px";
+    div.style.maxHeight = "200px";
+    div.style.overflowY = "auto";
+    div.style.webkitOverflowScrolling = "touch";
+    div.style.touchAction = "pan-y";
 
-      let html = "<b>動物種</b><br>";
+    let html = "<b>動物種</b><br>";
+    for (const key in colorPoinMap) {
+      html += `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${colorPoinMap[key]};margin-right:6px;vertical-align:middle;"></span>${key}<br>`;
+    }
 
-      for (const key in colorPoinMap) {
-        html +=
-          `<span style="
-            display:inline-block;
-            width:12px;
-            height:12px;
-            border-radius:50%;
-            background:${colorPoinMap[key]};
-            margin-right:6px;
-            vertical-align:middle;
-          "></span>${key}<br>`;
-      }
+    html = html +
+      "<b>その他</b><br>" +
+      `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${colorPolyMap["誘引物"]};margin-right:6px;vertical-align:middle;"></span>${"誘引物"}<br>` +
+      `<span style="display:inline-block;width:16px;height:10px;background:${hexToRgba(colorPolyMap["誘引物"], 0.3)};border:1.5px solid ${colorPolyMap["誘引物"]};margin-right:6px;vertical-align:middle;"></span>${"誘引物"}<br>` +
+      `<span style="display:inline-block;width:16px;height:10px;background:${hexToRgba(colorPolyMap["耕作放棄地"], 0.3)};border:1.5px solid ${colorPolyMap["耕作放棄地"]};margin-right:6px;vertical-align:middle;"></span>${"耕作放棄地"}<br>`;
 
-      html = html +
-        "<b>その他</b><br>" +
-        `<span style="
-          display:inline-block;
-          width:12px;
-          height:12px;
-          border-radius:50%;
-          background:${colorPolyMap["誘引物"]};
-          margin-right:6px;
-          vertical-align:middle;
-        "></span>${"誘引物"}<br>` +
-        `<span style="
-          display:inline-block;
-          width:16px;
-          height:10px;
-          background:${hexToRgba(colorPolyMap["誘引物"], 0.3)};
-          border: 1.5px solid ${colorPolyMap["誘引物"]};
-          margin-right:6px;
-          vertical-align:middle;
-        "></span>${"誘引物"}<br>` +
-        `<span style="
-          display:inline-block;
-          width:16px;
-          height:10px;
-          background:${hexToRgba(colorPolyMap["耕作放棄地"], 0.3)};
-          border: 1.5px solid ${colorPolyMap["耕作放棄地"]};
-          margin-right:6px;
-          vertical-align:middle;
-        "></span>${"耕作放棄地"}<br>`;
-        
-      div.innerHTML = html;
-      return div;
+    div.innerHTML = html;
+    return div;
     };
 
     legend.addTo(map);
